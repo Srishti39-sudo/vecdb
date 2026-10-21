@@ -1,0 +1,16 @@
+The human brain contains about 86 billion neurons and roughly as many glial cells that support them.
+The brain is about 2 percent of body weight but uses roughly 20 percent of the body's energy at rest.
+Neurons talk to each other at synapses by releasing chemical messengers called neurotransmitters, such as glutamate, GABA and dopamine.
+A neuron fires an all-or-nothing electrical spike called an action potential; stronger signals are coded by firing more often, not by bigger spikes.
+Myelin, a fatty sheath made by glial cells, insulates nerve fibres so signals can travel at over 100 metres per second.
+Learning physically rewires the brain: synapses that are used together grow stronger, often summed up as 'neurons that fire together wire together'.
+The hippocampus is needed to form new long-term memories of events; the patient H.M. lost this ability after it was removed but could still learn new motor skills.
+During sleep the brain replays and consolidates the day's memories, and studies in mice suggest it also clears metabolic waste more efficiently while asleep.
+Dopamine signals reward prediction error, the gap between the reward we expected and the one we got, which drives learning and motivation more than pleasure itself.
+The prefrontal cortex supports planning, self-control and working memory, and it is one of the last brain regions to mature, continuing into the mid-twenties.
+The amygdala helps detect threats and tags emotional experiences, which is why emotional events are remembered more vividly.
+A leading theory holds that the brain is a prediction machine: perception blends incoming senses with the brain's expectations of what it should see and hear.
+Neuroplasticity lasts a lifetime: adults can learn new languages and skills, and rehabilitation can help the brain regain function after a stroke.
+Working memory can hold only about four chunks of information at once, which is why grouping information into chunks helps us remember it.
+Attention is a limited resource: switching between tasks costs time and accuracy compared with doing one thing at a time.
+The default mode network is a set of brain regions most active during rest, daydreaming and thinking about ourselves and other people.

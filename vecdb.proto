@@ -1,0 +1,58 @@
+// One service, spoken by BOTH a shard and the router. A client cannot tell them apart:
+// that is what lets you go from 1 box to N shards without touching client code.
+//
+// Vectors travel as raw little-endian bytes (numpy .tobytes()), not `repeated float`.
+// 1000 x 128 floats as bytes = one memcpy; as repeated float = 128k varint encodes.
+syntax = "proto3";
+
+package vecdb;
+
+service VectorDB {
+  rpc Search (SearchRequest) returns (SearchResponse);
+  rpc Insert (InsertRequest) returns (InsertResponse);
+  rpc Stats  (StatsRequest)  returns (StatsResponse);
+}
+
+message SearchRequest {
+  bytes queries   = 1;   // float32, shape (nq, dim)
+  int32 nq        = 2;
+  int32 dim       = 3;
+  int32 k         = 4;
+  int32 nprobe    = 5;   // 0 = server default
+  int32 ef_search = 6;   // 0 = server default
+  int32 rerank    = 7;   // 0 = off; N > k = re-score N candidates exactly
+  bool  with_meta = 8;
+}
+
+message SearchResponse {
+  bytes  ids       = 1;  // int64,   shape (nq, k), -1 = empty slot
+  bytes  scores    = 2;  // float32, shape (nq, k)
+  int32  nq        = 3;
+  int32  k         = 4;
+  repeated string meta = 5;   // JSON per (query, rank), "" if none; only if with_meta
+  string metric    = 6;  // "l2" (smaller = closer) or "ip" (bigger = closer)
+  double server_ms = 7;  // time spent inside the server, for tail-latency breakdowns
+}
+
+message InsertRequest {
+  bytes vectors = 1;     // float32, shape (n, dim)
+  int32 n       = 2;
+  int32 dim     = 3;
+  bytes ids     = 4;     // int64, shape (n,); empty = auto-assign
+  repeated string meta = 5;   // JSON per vector, optional
+}
+
+message InsertResponse {
+  bytes ids    = 1;      // int64, the ids actually used
+  int64 ntotal = 2;
+}
+
+message StatsRequest {}
+
+message StatsResponse {
+  int64  ntotal  = 1;
+  int32  dim     = 2;
+  string metric  = 3;
+  string factory = 4;
+  int32  shards  = 5;    // 1 for a shard, N for a router
+}

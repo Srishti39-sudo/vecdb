@@ -1,0 +1,19 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+embeddings_cache.json
+indexes/
+*.index
+*.log
+.DS_Store
+.pytest_cache/
+vecdb/
+er_challenge/
+
+# personal planning + parked experiments (kept locally, not published)
+PROJECT2_PITCHSENSE.md
+ROADMAP.md
+day7_flat.rs
+day7_hnsw_scratch.py
+hnsw.index

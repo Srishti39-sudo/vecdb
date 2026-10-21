@@ -1,0 +1,261 @@
+{
+ "hardware": {
+  "machine": "Apple M1",
+  "system": "macOS-26.5-arm64-arm-64bit-Mach-O",
+  "cpus": 8,
+  "ram_gb": 8.0,
+  "python": "3.13.3",
+  "faiss": "1.15.0"
+ },
+ "index_factory": "IVF16384,PQ16",
+ "pivot_nprobe": 64,
+ "runs": [
+  {
+   "N": 1000000,
+   "index_bytes": 32650932,
+   "rows": [
+    {
+     "index": "IVFPQ16",
+     "nprobe": 1,
+     "recall": 0.2056,
+     "p50_ms": 0.703,
+     "p99_ms": 6.799,
+     "qps_batch": 3217,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 2,
+     "recall": 0.303,
+     "p50_ms": 0.721,
+     "p99_ms": 8.204,
+     "qps_batch": 3911,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 4,
+     "recall": 0.3976,
+     "p50_ms": 0.899,
+     "p99_ms": 5.212,
+     "qps_batch": 3464,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 8,
+     "recall": 0.4836,
+     "p50_ms": 0.886,
+     "p99_ms": 1.635,
+     "qps_batch": 4009,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 16,
+     "recall": 0.5448,
+     "p50_ms": 0.952,
+     "p99_ms": 1.864,
+     "qps_batch": 3148,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 32,
+     "recall": 0.5819,
+     "p50_ms": 1.011,
+     "p99_ms": 2.278,
+     "qps_batch": 3264,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 64,
+     "recall": 0.6013,
+     "p50_ms": 1.164,
+     "p99_ms": 1.882,
+     "qps_batch": 2527,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 128,
+     "recall": 0.6089,
+     "p50_ms": 1.635,
+     "p99_ms": 4.489,
+     "qps_batch": 2364,
+     "bytes_per_vec": 16
+    }
+   ]
+  },
+  {
+   "N": 10000000,
+   "index_bytes": 248650932,
+   "rows": [
+    {
+     "index": "IVFPQ16",
+     "nprobe": 1,
+     "recall": 0.2282,
+     "p50_ms": 0.788,
+     "p99_ms": 1.573,
+     "qps_batch": 13889,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 2,
+     "recall": 0.3177,
+     "p50_ms": 0.451,
+     "p99_ms": 1.153,
+     "qps_batch": 20237,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 4,
+     "recall": 0.3995,
+     "p50_ms": 0.422,
+     "p99_ms": 0.896,
+     "qps_batch": 24740,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 8,
+     "recall": 0.4623,
+     "p50_ms": 0.473,
+     "p99_ms": 0.901,
+     "qps_batch": 19430,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 16,
+     "recall": 0.505,
+     "p50_ms": 0.581,
+     "p99_ms": 1.15,
+     "qps_batch": 11918,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 32,
+     "recall": 0.5288,
+     "p50_ms": 0.791,
+     "p99_ms": 1.575,
+     "qps_batch": 8159,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 64,
+     "recall": 0.5406,
+     "p50_ms": 1.108,
+     "p99_ms": 2.3,
+     "qps_batch": 4164,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 128,
+     "recall": 0.5455,
+     "p50_ms": 1.664,
+     "p99_ms": 4.027,
+     "qps_batch": 2495,
+     "bytes_per_vec": 16
+    }
+   ]
+  },
+  {
+   "N": 100000000,
+   "index_bytes": 2408650932,
+   "rows": [
+    {
+     "index": "IVFPQ16",
+     "nprobe": 1,
+     "recall": 0.24,
+     "p50_ms": 0.518,
+     "p99_ms": 0.813,
+     "qps_batch": 5460,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 2,
+     "recall": 0.3206,
+     "p50_ms": 0.575,
+     "p99_ms": 1.11,
+     "qps_batch": 4940,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 4,
+     "recall": 0.3855,
+     "p50_ms": 0.656,
+     "p99_ms": 1.283,
+     "qps_batch": 3201,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 8,
+     "recall": 0.4252,
+     "p50_ms": 1.15,
+     "p99_ms": 2.505,
+     "qps_batch": 2400,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 16,
+     "recall": 0.4528,
+     "p50_ms": 1.43,
+     "p99_ms": 3.401,
+     "qps_batch": 1781,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 32,
+     "recall": 0.4644,
+     "p50_ms": 2.444,
+     "p99_ms": 5.577,
+     "qps_batch": 1250,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 64,
+     "recall": 0.4679,
+     "p50_ms": 4.396,
+     "p99_ms": 10.039,
+     "qps_batch": 714,
+     "bytes_per_vec": 16
+    },
+    {
+     "index": "IVFPQ16",
+     "nprobe": 128,
+     "recall": 0.4708,
+     "p50_ms": 12.723,
+     "p99_ms": 69.722,
+     "qps_batch": 386,
+     "bytes_per_vec": 16
+    }
+   ]
+  }
+ ],
+ "projection": {
+  "index_bytes_per_vector": 24.0,
+  "index_fixed_overhead_mb": 8.3,
+  "projected_1B_index_gb": 22.4,
+  "raw_uint8_1B_gb": 119.2,
+  "p50_growth_per_10x": [
+   "1M->10M: 0.95x",
+   "10M->100M: 3.97x"
+  ],
+  "p50_loglog_slope": 0.289,
+  "projected_1B_p50_ms_fixed_nlist": 6.7,
+  "note": "The 1B latency projection holds nlist fixed at the benchmarked value, so it is a worst case: it assumes lists keep growing. Growing nlist with sqrt(N), or sharding 4 ways as vdb_day7_router.py already does, keeps the scanned candidate count flat instead."
+ }
+}

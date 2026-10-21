@@ -1,0 +1,91 @@
+{
+ "hardware": {
+  "machine": "Apple M1",
+  "system": "macOS-26.5-arm64-arm-64bit-Mach-O",
+  "cpus": 8,
+  "ram_gb": 8.0,
+  "python": "3.13.3",
+  "faiss": "1.15.0"
+ },
+ "N": 10000000,
+ "DIM": 128,
+ "K": 10,
+ "NQ": 10000,
+ "index_factory": "IVF16384,PQ16",
+ "index_bytes": 248650932,
+ "raw_f32_bytes": 5120000000,
+ "rows": [
+  {
+   "index": "IVFPQ16",
+   "nprobe": 1,
+   "recall": 0.2282,
+   "p50_ms": 0.788,
+   "p99_ms": 1.573,
+   "qps_batch": 13889,
+   "bytes_per_vec": 16
+  },
+  {
+   "index": "IVFPQ16",
+   "nprobe": 2,
+   "recall": 0.3177,
+   "p50_ms": 0.451,
+   "p99_ms": 1.153,
+   "qps_batch": 20237,
+   "bytes_per_vec": 16
+  },
+  {
+   "index": "IVFPQ16",
+   "nprobe": 4,
+   "recall": 0.3995,
+   "p50_ms": 0.422,
+   "p99_ms": 0.896,
+   "qps_batch": 24740,
+   "bytes_per_vec": 16
+  },
+  {
+   "index": "IVFPQ16",
+   "nprobe": 8,
+   "recall": 0.4623,
+   "p50_ms": 0.473,
+   "p99_ms": 0.901,
+   "qps_batch": 19430,
+   "bytes_per_vec": 16
+  },
+  {
+   "index": "IVFPQ16",
+   "nprobe": 16,
+   "recall": 0.505,
+   "p50_ms": 0.581,
+   "p99_ms": 1.15,
+   "qps_batch": 11918,
+   "bytes_per_vec": 16
+  },
+  {
+   "index": "IVFPQ16",
+   "nprobe": 32,
+   "recall": 0.5288,
+   "p50_ms": 0.791,
+   "p99_ms": 1.575,
+   "qps_batch": 8159,
+   "bytes_per_vec": 16
+  },
+  {
+   "index": "IVFPQ16",
+   "nprobe": 64,
+   "recall": 0.5406,
+   "p50_ms": 1.108,
+   "p99_ms": 2.3,
+   "qps_batch": 4164,
+   "bytes_per_vec": 16
+  },
+  {
+   "index": "IVFPQ16",
+   "nprobe": 128,
+   "recall": 0.5455,
+   "p50_ms": 1.664,
+   "p99_ms": 4.027,
+   "qps_batch": 2495,
+   "bytes_per_vec": 16
+  }
+ ]
+}

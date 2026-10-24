@@ -11,7 +11,8 @@ an evaluation suite). Built to work up to 1B vectors on one rented box.
 
 **RAG service, measured on a labelled set of 60 questions:** hit@1 1.00 retrieval, 51/52 answers
 correct and cited, 8/8 unanswerable questions declined, prompt injection resisted
-([details](#rag-service-evaluation)).
+([details](#rag-service-evaluation)). Under load it serves **~165 req/s with zero errors** from 4 to 64
+concurrent clients, retrieval p50 under 20 ms ([load test](#load-test)).
 
 Full explanation of every concept: [`docs/VectorDB_Explained.pdf`](docs/VectorDB_Explained.pdf).
 
@@ -36,13 +37,13 @@ client ──gRPC──> router (vdb_day7_router.py)          same service as a 
 | `vdb_build_100m.py` | streams BigANN over HTTP into IVF-PQ with checkpoints; `--offset` builds 1B shards |
 | `vdb_scaling_curve.py` | turns the 1M / 10M / 100M runs into one table, chart and 1B projection |
 | `rag/` | the production RAG service (next section) |
-| `tests/` | 32 tests: `test_vdb.py` (DB, shards, router) and `test_rag_service.py` (offline RAG + API) |
+| `tests/` | 35 tests: `test_vdb.py` (DB, shards, router) and `test_rag_service.py` (offline RAG + API) |
 
 ## Run it
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m pytest tests -q                       # 32 passed, no API key needed
+.venv/bin/python -m pytest tests -q                       # 35 passed, no API key needed
 
 .venv/bin/python vdb_day5_db.py --n 1000000               # 1M build + recall/latency sweep
 .venv/bin/python vdb_day7_bench.py --n 1000000 --shards 4 # 1 vs 4 shards through gRPC
@@ -51,8 +52,9 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m rag.cli ingest data/docs --tags neuroscience
 .venv/bin/python -m rag.cli calibrate
 .venv/bin/python -m rag.cli ask "why does the brain need sleep?"
-RAG_API_KEYS=change-me .venv/bin/python -m rag.cli serve --port 8000
+RAG_API_KEYS=change-me .venv/bin/python -m rag.cli serve --port 8000   # web UI at http://localhost:8000/
 .venv/bin/python -m rag.cli eval --generate                # the benchmark below
+.venv/bin/python -m rag.loadtest                           # the load test below
 ```
 
 ## RAG service (`rag/`)
@@ -76,13 +78,18 @@ POST /v1/query ─> embed ─> FAISS top-n ─┐
 | `rag/store.py` | `DocumentStore`: upsert / delete by content hash, one transaction per write, hybrid search, doc + tag filters inside the search, model-version guard, crash recovery |
 | `rag/pipeline.py` | abstain gate, injection-fenced prompt, citation parsing and validation, one repair call, streaming |
 | `rag/api.py` | FastAPI: API keys, per-key token-bucket rate limit, request ids, JSON logs (question hashed, not stored), Prometheus `/metrics`, SSE streaming, health/readiness |
+| `rag/static/index.html` | web UI served at `/`: streams the answer, citations jump to their source, file upload; no build step, no external scripts |
+| `rag/loadtest.py` | real server + real HTTP under 1-64 concurrent clients, LLM stubbed, client in its own process |
 | `rag/eval.py` | retrieval (hit@k, MRR per mode and slice), gate, answer quality, prompt-injection test |
 | `Dockerfile`, `.github/workflows/ci.yml` | non-root image with a healthcheck; CI runs the tests on 3.12 / 3.13, builds the image and smoke-tests it |
 
-API: `POST /v1/documents`, `GET /v1/documents`, `DELETE /v1/documents/{id}`, `POST /v1/query`,
-`POST /v1/query/stream` (Server-Sent Events: `sources`, `token`..., `done`), `GET /healthz`, `/readyz`, `/metrics`.
+![web UI](docs/rag_ui.png)
+
+API: `POST /v1/documents`, `POST /v1/documents/upload` (multipart .md/.txt/.pdf/.html, 20 MB), `GET /v1/documents`, `DELETE /v1/documents/{id}`, `POST /v1/query`,
+`POST /v1/query/stream` (Server-Sent Events: `sources`, `token`..., `done`), `GET /healthz`, `/readyz`, `/metrics`, and the UI at `/` (`?q=...` links ask straight away).
 Configuration is environment only (`rag/config.py`): `RAG_DATA_DIR`, `RAG_API_KEYS`, `RAG_RATE_LIMIT`,
-`RAG_CHAT_MODEL`, `RAG_EMBED_MODEL`, `RAG_EMBED_DIM`, `RAG_CHUNK_CHARS`, `RAG_BM25_WEIGHT`, `RAG_TOP_K`.
+`RAG_CHAT_MODEL`, `RAG_EMBED_MODEL`, `RAG_EMBED_DIM`, `RAG_CHUNK_CHARS`, `RAG_BM25_WEIGHT`, `RAG_TOP_K`,
+`RAG_MAX_CONCURRENCY`, `RAG_MAX_INFLIGHT`, `RAG_FAISS_THREADS`.
 
 Design decisions:
 - **SQLite is the source of truth, FAISS is derived.** Every write is one transaction that bumps a
@@ -180,10 +187,35 @@ What the curve says:
 measured with `vdb_day7_bench.py --connect`). Memory: ~22 GB of IVF-PQ16 index vs 119 GB raw uint8
 (512 GB as float32).
 
+### Load test
+
+`python -m rag.loadtest`: the real uvicorn server, HTTP, auth, rate limiter, SQLite, FAISS and fusion, with
+the LLM stubbed and question embeddings from cache, so it measures the service rather than Gemini. One
+worker, Apple M1, 600 requests per level to `POST /v1/query` (`results_rag_load.json`).
+
+| concurrent clients | req/s | p50 ms | p95 ms | p99 ms | errors |
+|---|---|---|---|---|---|
+| 1 | 103 | 9.0 | 14.4 | 16.3 | 0 |
+| 4 | 167 | 21.7 | 43.9 | 61.5 | 0 |
+| 16 | 169 | 91.7 | 137.6 | 171.3 | 0 |
+| 64 | 163 | 360.6 | 437.8 | 460.6 | 0 |
+
+Throughput is flat past 4 clients and extra load turns into queueing, which is the intended shape. Gemini adds
+~0.5-1.5 s to embed a new question and 1-5 s to answer; a declined question costs ~70 ms and no LLM call.
+
+What the load test caught (before, at 64 clients: **51 req/s, p99 5 s, 39 failed requests at 4 clients**):
+- **A concurrency bug** unit tests missed: all threads shared one SQLite connection, so concurrent reads
+  got each other's rows. Fixed with a read connection per thread (WAL) and a regression test with 16
+  threads reading while another writes.
+- **GIL thrashing**: 40 pool threads competing for one interpreter made throughput fall as load rose.
+  Capping CPU work at 4 concurrent requests (`RAG_MAX_CONCURRENCY`, swept over 2/4/8/40) keeps it flat;
+  beyond `RAG_MAX_INFLIGHT` requests the API sheds load with an immediate 503 + `Retry-After`.
+
 ## Limits
 
-- **One writer process.** The FAISS index lives in the API process, so the service runs one uvicorn worker.
-  Scaling out means read replicas loading the snapshot, or putting the chunks behind the gRPC shards above.
+- **One process.** The FAISS index lives in the API process, so the service runs one uvicorn worker
+  (~165 req/s here). Scaling out means read replicas loading the snapshot, or the chunks behind the gRPC
+  shards above. The in-flight count covers a streaming request until its headers are sent, not its last token.
 - **Flat index by default**, exact and right for up to a few hundred thousand chunks; set
   `RAG_INDEX_FACTORY` (e.g. `IVF1024,Flat`) beyond that. HNSW cannot delete, so it is not offered here.
 - Rate limits are per process, and the free Gemini tier is the real ceiling (embeddings 100/min; chat
@@ -199,5 +231,5 @@ embeddings, a first RAG, temperature/top-p sampling, approximate search, LSH and
 
 In: persistence, ids + metadata, deletes, filtered search, re-rank, mmap, gRPC sharding, partial-failure
 handling, streaming builds; for RAG: ingestion, hybrid search, citations, auth, rate limits, metrics, evaluation.
-Out (on purpose): replication, multi-writer concurrency, a cross-encoder reranker, a UI.
+Out (on purpose): replication, multiple workers, a cross-encoder reranker, user accounts (API keys only).
 `vdb_day5_rag.py` remains as the minimal RAG the service grew from.

@@ -160,6 +160,26 @@ def test_persistence_and_crash_recovery(tmp_path):
     assert s2.search("reward prediction burst", 1, mode="vector").hits[0].doc_id == "dopamine"
 
 
+def test_concurrent_searches_and_writes(tmp_path):
+    """Found by rag.loadtest: one shared sqlite connection mixed up rows across threads."""
+    from concurrent.futures import ThreadPoolExecutor
+    s = make_store(tmp_path)
+    s.upsert("sleep", [(None, SLEEP)], "Sleep")
+    s.upsert("dopamine", [(None, DOPAMINE)], "Dopamine")
+
+    def read(i):
+        q = ["amyloid waste sleep", "reward prediction burst dopamine"][i % 2]
+        return {h.doc_id for h in s.search(q, 1).hits} == {["sleep", "dopamine"][i % 2]}
+
+    def write(i):
+        s.upsert(f"extra{i}", [(None, f"Note {i} about the cerebellum and balance.")], f"Extra {i}")
+        return True
+    with ThreadPoolExecutor(16) as pool:
+        futures = [pool.submit(read, i) for i in range(400)] + [pool.submit(write, i) for i in range(10)]
+        assert all(f.result() for f in futures)
+    assert s.stats()["indexed"] == s.stats()["chunks"]
+
+
 def test_model_mismatch_and_reembed(tmp_path):
     s = make_store(tmp_path)
     s.upsert("sleep", [(None, SLEEP)], "Sleep")
@@ -305,6 +325,25 @@ def test_api_auth_and_flow(client):
     assert client.get("/readyz").json()["documents"] == 1
 
 
+def test_api_upload_and_ui(client, tmp_path):
+    H = {"X-API-Key": "k1"}
+    html = b"<html><body><h1>Sleep notes</h1><p>Sleep washes amyloid waste out of the brain.</p></body></html>"
+    r = client.post("/v1/documents/upload", files={"file": ("sleep notes.html", html, "text/html")},
+                    data={"tags": "night, notes"}, headers=H)
+    assert r.status_code == 201 and r.json() == {"id": "sleep-notes", "status": "created", "chunks": 1}
+    doc = client.get("/v1/documents", headers=H).json()["documents"][0]
+    assert doc["title"] == "Sleep notes" and doc["tags"] == ["night", "notes"] and doc["source"] == "sleep notes.html"
+    assert client.post("/v1/documents/upload", files={"file": ("x.exe", b"MZ", "application/octet-stream")},
+                       headers=H).status_code == 415
+    assert client.post("/v1/documents/upload", files={"file": ("bad.pdf", b"not a pdf", "application/pdf")},
+                       headers=H).status_code == 422
+    assert client.post("/v1/documents/upload", files={"file": ("a.txt", b"x", "text/plain")}).status_code == 401
+    page = client.get("/")
+    assert page.status_code == 200 and "vecdb RAG" in page.text
+    assert "frame-ancestors 'none'" in page.headers["content-security-policy"]
+    assert page.headers["x-content-type-options"] == "nosniff"
+
+
 def test_api_rate_limit(tmp_path):
     from fastapi.testclient import TestClient
     from rag.api import create_app
@@ -312,6 +351,17 @@ def test_api_rate_limit(tmp_path):
     with TestClient(create_app(settings, store=make_store(tmp_path), chat=FakeChat())) as c:
         codes = [c.get("/v1/documents").status_code for _ in range(5)]
     assert codes[:3] == [200] * 3 and codes[3] == 429
+
+
+def test_api_sheds_load_when_saturated(tmp_path):
+    from fastapi.testclient import TestClient
+    from rag.api import create_app
+    settings = Settings(api_keys=frozenset(), max_inflight=0)          # every /v1 request is "one too many"
+    with TestClient(create_app(settings, store=make_store(tmp_path), chat=FakeChat())) as c:
+        r = c.get("/v1/documents")
+        assert r.status_code == 503 and r.headers["retry-after"] == "1"
+        assert c.get("/healthz").status_code == 200                     # probes are never shed
+        assert "rag_shed_total 1.0" in c.get("/metrics").text
 
 
 def test_api_quota_maps_to_503(tmp_path):

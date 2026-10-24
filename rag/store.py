@@ -139,7 +139,11 @@ class DocumentStore:
         self.bm25_weight = bm25_weight              # hybrid: weight of the BM25 list in RRF
         self.chunk_chars, self.chunk_overlap = chunk_chars, chunk_overlap
         os.makedirs(path, exist_ok=True)
-        self.sql = sqlite3.connect(f"{path}/store.sqlite", check_same_thread=False)
+        # one WRITER connection (used only under the write lock) + one READ connection per thread:
+        # a sqlite3 connection shared by concurrent threads interleaves their result rows
+        self._file = f"{path}/store.sqlite"
+        self._local = threading.local()
+        self.sql = sqlite3.connect(self._file, check_same_thread=False)
         self.sql.execute("PRAGMA journal_mode=WAL")
         self.sql.execute("PRAGMA synchronous=NORMAL")
         self.sql.execute("PRAGMA foreign_keys=ON")
@@ -149,9 +153,18 @@ class DocumentStore:
         self.db = self._open_index()
         self._dirty = False
 
+    def _r(self):
+        """This thread's read-only connection (WAL: readers see the last commit, never block the writer)."""
+        conn = getattr(self._local, "conn", None)
+        if conn is None:
+            conn = sqlite3.connect(f"file:{self._file}?mode=ro", uri=True, check_same_thread=False)
+            conn.execute("PRAGMA query_only=ON")
+            self._local.conn = conn
+        return conn
+
     # ------------------------------------------------------------------ meta
     def get_meta(self, key, default=None):
-        row = self.sql.execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
+        row = self._r().execute("SELECT value FROM meta WHERE key = ?", (key,)).fetchone()
         return json.loads(row[0]) if row else default
 
     def _set_meta(self, key, value):
@@ -219,7 +232,7 @@ class DocumentStore:
         body = "\x00".join(t for _, t in pages)
         sha = hashlib.sha256(f"{title}\x00{body}\x00{self.chunk_chars}/{self.chunk_overlap}/v{CHUNKER_VERSION}"
                              .encode()).hexdigest()
-        row = self.sql.execute("SELECT sha256, n_chunks, tags FROM documents WHERE id = ?",
+        row = self._r().execute("SELECT sha256, n_chunks, tags FROM documents WHERE id = ?",
                                (doc_id,)).fetchone()
         if row and row[0] == sha and json.loads(row[2]) == tags:
             return {"id": doc_id, "status": "unchanged", "chunks": row[1]}
@@ -276,7 +289,7 @@ class DocumentStore:
 
     def reembed(self, batch=500):
         """Re-embed every chunk with the current embedder (model upgrade / dimension change)."""
-        rows = self.sql.execute(
+        rows = self._r().execute(
             "SELECT c.id, d.title, c.section, c.text FROM chunks c JOIN documents d ON d.id = c.doc_id"
         ).fetchall()
         from rag.chunking import Chunk
@@ -298,13 +311,13 @@ class DocumentStore:
 
     # ------------------------------------------------------------------ reads
     def documents(self):
-        rows = self.sql.execute(
+        rows = self._r().execute(
             "SELECT id, title, source, tags, n_chunks, created_at, updated_at FROM documents ORDER BY id")
         return [{"id": r[0], "title": r[1], "source": r[2], "tags": json.loads(r[3]),
                  "chunks": r[4], "created_at": r[5], "updated_at": r[6]} for r in rows]
 
     def stats(self):
-        n_docs, n_chunks = self.sql.execute(
+        n_docs, n_chunks = self._r().execute(
             "SELECT (SELECT COUNT(*) FROM documents), (SELECT COUNT(*) FROM chunks)").fetchone()
         return {"documents": n_docs, "chunks": n_chunks, "indexed": len(self.db),
                 "version": self.version, "embed_model": self.get_meta("embed_model"),
@@ -321,7 +334,7 @@ class DocumentStore:
         if tags:
             q += f" AND EXISTS (SELECT 1 FROM json_each(tags) WHERE value IN ({','.join('?' * len(tags))}))"
             args += list(tags)
-        return [r[0] for r in self.sql.execute(q, args)]
+        return [r[0] for r in self._r().execute(q, args)]
 
     def search(self, question, k=5, mode="hybrid", doc_ids=None, tags=None, q_vec=None):
         """mode: 'vector' | 'bm25' | 'hybrid'. Filters: doc_ids (any of), tags (any of)."""
@@ -335,7 +348,7 @@ class DocumentStore:
                 return SearchResult([], 0.0)
             allowed = None
             if docs is not None:
-                allowed = np.asarray([r[0] for r in self.sql.execute(
+                allowed = np.asarray([r[0] for r in self._r().execute(
                     f"SELECT id FROM chunks WHERE doc_id IN ({','.join('?' * len(docs))})", docs)], np.int64)
 
             vec_ids, best = [], 0.0
@@ -353,7 +366,7 @@ class DocumentStore:
                 if docs is not None:
                     sql += f" AND c.doc_id IN ({','.join('?' * len(docs))})"
                     args += docs
-                bm_ids = [r[0] for r in self.sql.execute(sql + " ORDER BY bm25(chunks_fts) LIMIT ?", args + [n])]
+                bm_ids = [r[0] for r in self._r().execute(sql + " ORDER BY bm25(chunks_fts) LIMIT ?", args + [n])]
             terms = query_terms(question)
             matched = self._terms_matched(terms, bm_ids)
 
@@ -373,7 +386,7 @@ class DocumentStore:
         marks = ",".join("?" * len(ids))
         per = {}
         for t in terms[:12]:
-            for (cid,) in self.sql.execute(
+            for (cid,) in self._r().execute(
                     f"SELECT rowid FROM chunks_fts WHERE chunks_fts MATCH ? AND rowid IN ({marks})",
                     [f'"{t}"'] + list(ids)):
                 per[cid] = per.get(cid, 0) + 1
@@ -383,7 +396,7 @@ class DocumentStore:
         if not ranked:
             return []
         ids = [cid for cid, _ in ranked]
-        rows = {r[0]: r for r in self.sql.execute(
+        rows = {r[0]: r for r in self._r().execute(
             "SELECT c.id, c.doc_id, d.title, c.section, c.page, c.text, c.embedding "
             f"FROM chunks c JOIN documents d ON d.id = c.doc_id WHERE c.id IN ({','.join('?' * len(ids))})", ids)}
         vrank = {cid: r for r, cid in enumerate(vec_ids, 1)}

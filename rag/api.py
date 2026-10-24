@@ -3,7 +3,9 @@
     GET    /healthz                 liveness
     GET    /readyz                  readiness + store stats
     GET    /metrics                 Prometheus (keep it on the internal network)
+    GET    /                        a small web UI (ask with streaming + citations, upload files)
     POST   /v1/documents            upsert one document (idempotent on content)
+    POST   /v1/documents/upload     the same from a .md / .txt / .pdf / .html file (multipart)
     GET    /v1/documents            list
     DELETE /v1/documents/{id}       delete a document and all its chunks
     POST   /v1/query                answer with citations
@@ -22,19 +24,22 @@ import hashlib
 import hmac
 import json
 import logging
+import os
 import re
+import tempfile
 import threading
 import time
 import uuid
 from contextlib import asynccontextmanager
 from typing import Literal
 
-from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.concurrency import run_in_threadpool
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from prometheus_client import CONTENT_TYPE_LATEST, CollectorRegistry, Counter, Gauge, Histogram, generate_latest
 from pydantic import BaseModel, Field
 
+from rag.chunking import load_file
 from rag.config import Settings
 from rag.llm import Chat, QuotaExceeded
 from rag.pipeline import RAGPipeline
@@ -43,6 +48,9 @@ from rag.store import open_store
 request_id = contextvars.ContextVar("request_id", default="-")
 log = logging.getLogger("rag.api")
 DOC_ID = r"^[A-Za-z0-9._-]{1,128}$"
+UPLOAD_TYPES = (".md", ".markdown", ".txt", ".pdf", ".html", ".htm")
+MAX_UPLOAD_BYTES = 20 * 2**20
+UI = os.path.join(os.path.dirname(__file__), "static", "index.html")
 SAFE_RID = re.compile(r"[A-Za-z0-9._-]{1,64}")
 
 
@@ -120,10 +128,15 @@ def create_app(settings=None, store=None, chat=None):
     m_docs = Gauge("rag_documents", "documents in the store", registry=registry)
     m_chunks = Gauge("rag_chunks", "chunks in the store", registry=registry)
     limiter = RateLimiter(settings.rate_limit_per_min)
-    state = {}
+    m_shed = Counter("rag_shed_total", "requests rejected because the server was saturated", registry=registry)
+    state = {"inflight": 0}
 
     @asynccontextmanager
     async def lifespan(app):
+        import anyio
+        import faiss
+        faiss.omp_set_num_threads(settings.faiss_threads)
+        anyio.to_thread.current_default_thread_limiter().total_tokens = settings.max_concurrency
         state["store"] = store or open_store(settings)
         state["pipeline"] = RAGPipeline(state["store"], chat or Chat(settings.chat_model), settings.top_k)
         if not settings.api_keys:
@@ -144,6 +157,17 @@ def create_app(settings=None, store=None, chat=None):
 
     @app.middleware("http")
     async def observe(request: Request, call_next):
+        if request.url.path.startswith("/v1/") and state["inflight"] >= settings.max_inflight:
+            m_shed.inc()                                   # shed load: fail fast instead of queueing forever
+            return JSONResponse({"detail": "server busy, retry shortly"}, status_code=503,
+                                headers={"Retry-After": "1"})
+        state["inflight"] += 1                             # one event loop thread: no lock needed
+        try:
+            return await _observe(request, call_next)
+        finally:
+            state["inflight"] -= 1
+
+    async def _observe(request, call_next):
         rid = request.headers.get("x-request-id", "")
         if not SAFE_RID.fullmatch(rid):                    # never echo arbitrary client text into logs
             rid = uuid.uuid4().hex[:16]
@@ -165,6 +189,7 @@ def create_app(settings=None, store=None, chat=None):
                                                   "status": status, "ms": round(dt * 1e3, 2)}})
             request_id.reset(token)
         response.headers["X-Request-ID"] = rid
+        response.headers["X-Content-Type-Options"] = "nosniff"
         return response
 
     def caller(request: Request):
@@ -187,6 +212,15 @@ def create_app(settings=None, store=None, chat=None):
             return HTTPException(503, "LLM quota exhausted, try later", headers={"Retry-After": "60"})
         log.exception("LLM call failed")
         return HTTPException(502, "upstream model error")
+
+    # ------------------------------------------------------------------ UI
+    @app.get("/", include_in_schema=False)
+    def ui():
+        # a single self-contained page; it calls the same /v1 API (and needs the same key) as any client
+        return FileResponse(UI, media_type="text/html", headers={
+            "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; "
+                                       "style-src 'self' 'unsafe-inline'; frame-ancestors 'none'",
+            "Cache-Control": "no-cache"})
 
     # ------------------------------------------------------------------ health
     @app.get("/healthz")
@@ -220,6 +254,40 @@ def create_app(settings=None, store=None, chat=None):
         except Exception as e:                                 # noqa: BLE001
             raise llm_errors(e)
         log.info("upsert", extra={"fields": {**out, "caller": who}})
+        return out
+
+    @app.post("/v1/documents/upload", status_code=201)
+    def upload_document(file: UploadFile = File(...), id: str | None = Form(None),
+                        tags: str = Form(""), who: str = Depends(caller)):
+        """Multipart upload of a .md / .txt / .pdf / .html file (max 20 MB)."""
+        name = os.path.basename(file.filename or "")
+        ext = os.path.splitext(name)[1].lower()
+        if ext not in UPLOAD_TYPES:
+            raise HTTPException(415, f"unsupported file type {ext or '(none)'}; use {', '.join(UPLOAD_TYPES)}")
+        doc_id = id or slug(os.path.splitext(name)[0])
+        if not re.fullmatch(DOC_ID, doc_id):
+            raise HTTPException(422, "invalid document id")
+        data = file.file.read(MAX_UPLOAD_BYTES + 1)
+        if len(data) > MAX_UPLOAD_BYTES:
+            raise HTTPException(413, "file larger than 20 MB")
+        with tempfile.TemporaryDirectory() as tmp:            # loaders take a path; the name keeps the type
+            path = os.path.join(tmp, "upload" + ext)
+            with open(path, "wb") as f:
+                f.write(data)
+            try:
+                title, pages = load_file(path)
+            except Exception as e:                             # noqa: BLE001  (corrupt pdf, bad encoding)
+                raise HTTPException(422, f"could not read file: {type(e).__name__}")
+        if title == "upload":                                  # no H1 / PDF title: use the file name
+            title = os.path.splitext(name)[0]
+        try:
+            out = state["store"].upsert(doc_id, pages, title, source=name,
+                                        tags=[t.strip() for t in tags.split(",") if t.strip()])
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+        except Exception as e:                                 # noqa: BLE001
+            raise llm_errors(e)
+        log.info("upload", extra={"fields": {**out, "caller": who, "bytes": len(data)}})
         return out
 
     @app.get("/v1/documents")

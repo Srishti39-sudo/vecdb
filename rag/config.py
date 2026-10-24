@@ -19,6 +19,12 @@ class Settings:
     embed_dim: int = field(default_factory=lambda: int(os.getenv("RAG_EMBED_DIM", "768")))
     chat_model: str = field(default_factory=lambda: os.getenv("RAG_CHAT_MODEL", "gemini-3.5-flash-lite"))
     index_factory: str = field(default_factory=lambda: os.getenv("RAG_INDEX_FACTORY", "Flat"))
+    # threads per FAISS search; concurrency comes from parallel requests, so 1 avoids oversubscription
+    faiss_threads: int = field(default_factory=lambda: int(os.getenv("RAG_FAISS_THREADS", "1")))
+    # requests doing CPU work at once (FastAPI's thread pool); the rest queue instead of thrashing the GIL
+    max_concurrency: int = field(default_factory=lambda: int(os.getenv("RAG_MAX_CONCURRENCY", "4")))
+    # requests admitted at once (running + queued); beyond this /v1 answers 503 at once (load shedding)
+    max_inflight: int = field(default_factory=lambda: int(os.getenv("RAG_MAX_INFLIGHT", "256")))
     top_k: int = field(default_factory=lambda: int(os.getenv("RAG_TOP_K", "5")))
     chunk_chars: int = field(default_factory=lambda: int(os.getenv("RAG_CHUNK_CHARS", "1000")))
     bm25_weight: float = field(default_factory=lambda: float(os.getenv("RAG_BM25_WEIGHT", "0.25")))

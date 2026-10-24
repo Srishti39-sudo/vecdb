@@ -60,6 +60,20 @@ def test_ip_metric():
     assert (np.diff(S, axis=1) <= 1e-5).all()          # similarities come back descending
 
 
+@pytest.mark.parametrize("factory", ["Flat", "IVF16,Flat"])
+def test_remove_and_filtered_search(factory):
+    X, Q = data(2000)
+    db = VectorDB(D, factory, keep_raw=True, nprobe=16)
+    db.add(X, metas=[{"row": i} for i in range(len(X))])
+    allowed = np.arange(500, 600)
+    for rerank in (0, 50):
+        _, I = db.search_ids(Q, 5, allowed_ids=allowed, rerank=rerank)
+        assert ((I >= 500) & (I < 600)).all()
+    assert db.remove(np.arange(10)) == 10 and len(db) == len(X) - 10
+    _, I = db.search_ids(X[:10], 1)
+    assert (I >= 10).all() and db.get_meta([0, 10]) == {10: {"row": 10}}
+
+
 def test_save_load_roundtrip(tmp_path):
     X, Q = data()
     db = VectorDB(D, "IVF64,PQ8", keep_raw=True, nprobe=8)

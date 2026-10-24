@@ -1,0 +1,60 @@
+{"id": "a01", "question": "How many nerve cells are in a human brain?", "answerable": true, "doc": "neurons", "evidence": ["roughly 86 billion neurons"], "kind": "paraphrase"}
+{"id": "a02", "question": "Do glial cells outnumber neurons ten to one?", "answerable": true, "doc": "neurons", "evidence": ["not ten times more numerous"], "kind": "paraphrase"}
+{"id": "a03", "question": "Why doesn't a stronger stimulus make a bigger spike?", "answerable": true, "doc": "neurons", "evidence": ["all-or-nothing"], "kind": "paraphrase"}
+{"id": "a04", "question": "How does insulation around axons make signals travel faster?", "answerable": true, "doc": "neurons", "evidence": ["saltatory conduction"], "kind": "paraphrase"}
+{"id": "a05", "question": "Which chemical messenger mainly quietens neurons down?", "answerable": true, "doc": "neurons", "evidence": ["GABA is the main inhibitory"], "kind": "paraphrase"}
+{"id": "a06", "question": "Why does the brain burn so much energy?", "answerable": true, "doc": "neurons", "evidence": ["Most of that energy goes into pumping ions"], "kind": "paraphrase"}
+{"id": "a07", "question": "What happened when a synapse in a rabbit's hippocampus got high-frequency stimulation?", "answerable": true, "doc": "learning-and-memory", "evidence": ["long-term potentiation"], "kind": "paraphrase"}
+{"id": "a08", "question": "Which receptor detects that two connected neurons are active at the same moment?", "answerable": true, "doc": "learning-and-memory", "evidence": ["coincidence detector"], "kind": "paraphrase"}
+{"id": "a09", "question": "What could patient H.M. still learn after his surgery?", "answerable": true, "doc": "learning-and-memory", "evidence": ["new motor skills"], "kind": "paraphrase"}
+{"id": "a10", "question": "What is the difference between remembering events and remembering facts?", "answerable": true, "doc": "learning-and-memory", "evidence": ["episodic memory for personal events"], "kind": "paraphrase"}
+{"id": "a11", "question": "Why can a confident memory still be wrong?", "answerable": true, "doc": "learning-and-memory", "evidence": ["reconsolidation"], "kind": "paraphrase"}
+{"id": "a12", "question": "How long does one sleep cycle last?", "answerable": true, "doc": "sleep", "evidence": ["about 90 minutes"], "kind": "paraphrase"}
+{"id": "a13", "question": "How does coffee keep you awake?", "answerable": true, "doc": "sleep", "evidence": ["blocking adenosine receptors"], "kind": "paraphrase"}
+{"id": "a14", "question": "Which part of the brain sets the body clock?", "answerable": true, "doc": "sleep", "evidence": ["suprachiasmatic nucleus"], "kind": "paraphrase"}
+{"id": "a15", "question": "Why does the brain need sleep?", "answerable": true, "doc": "sleep", "evidence": ["Sleep strengthens memories", "wash out waste products"], "kind": "paraphrase"}
+{"id": "a16", "question": "How does the brain get rid of waste at night?", "answerable": true, "doc": "sleep", "evidence": ["glymphatic system"], "kind": "paraphrase"}
+{"id": "a17", "question": "Is staying awake for 18 hours like being drunk?", "answerable": true, "doc": "sleep", "evidence": ["0.05 percent"], "kind": "paraphrase"}
+{"id": "a18", "question": "What do dopamine neurons do when an expected reward never arrives?", "answerable": true, "doc": "dopamine-and-reward", "evidence": ["briefly fell silent"], "kind": "paraphrase"}
+{"id": "a19", "question": "Is dopamine really the pleasure chemical?", "answerable": true, "doc": "dopamine-and-reward", "evidence": ["drive wanting"], "kind": "paraphrase"}
+{"id": "a20", "question": "Why are drugs like cocaine so addictive?", "answerable": true, "doc": "dopamine-and-reward", "evidence": ["raise dopamine levels directly"], "kind": "paraphrase"}
+{"id": "a21", "question": "What causes the tremor in Parkinson's disease?", "answerable": true, "doc": "dopamine-and-reward", "evidence": ["substantia nigra gradually die"], "kind": "paraphrase"}
+{"id": "a22", "question": "Which machine learning algorithm resembles the dopamine signal?", "answerable": true, "doc": "dopamine-and-reward", "evidence": ["temporal difference learning"], "kind": "paraphrase"}
+{"id": "a23", "question": "Why do we remember shocking events so vividly?", "answerable": true, "doc": "emotion-and-decisions", "evidence": ["Emotional experiences are remembered better"], "kind": "paraphrase"}
+{"id": "a24", "question": "What happened to Phineas Gage?", "answerable": true, "doc": "emotion-and-decisions", "evidence": ["iron tamping rod"], "kind": "paraphrase"}
+{"id": "a25", "question": "Does emotion help or hurt good decisions?", "answerable": true, "doc": "emotion-and-decisions", "evidence": ["somatic marker hypothesis"], "kind": "paraphrase"}
+{"id": "a26", "question": "At what age does the brain's self-control system finish maturing?", "answerable": true, "doc": "emotion-and-decisions", "evidence": ["around age 25"], "kind": "paraphrase"}
+{"id": "a27", "question": "How do animals learn that a sound predicts danger?", "answerable": true, "doc": "emotion-and-decisions", "evidence": ["fear conditioning"], "kind": "paraphrase"}
+{"id": "a28", "question": "How many things can I actually keep in mind at once?", "answerable": true, "doc": "attention-and-working-memory", "evidence": ["about four chunks"], "kind": "paraphrase"}
+{"id": "a29", "question": "What did the invisible gorilla experiment show?", "answerable": true, "doc": "attention-and-working-memory", "evidence": ["inattentional blindness"], "kind": "paraphrase"}
+{"id": "a30", "question": "Can people really multitask?", "answerable": true, "doc": "attention-and-working-memory", "evidence": ["rapid switching between tasks"], "kind": "paraphrase"}
+{"id": "a31", "question": "What is my brain doing when I daydream?", "answerable": true, "doc": "attention-and-working-memory", "evidence": ["default mode network"], "kind": "paraphrase"}
+{"id": "a32", "question": "Did driving a London taxi change drivers' brains?", "answerable": true, "doc": "plasticity-and-development", "evidence": ["posterior hippocampus"], "kind": "paraphrase"}
+{"id": "a33", "question": "What happened to kittens with one eye kept closed early in life?", "answerable": true, "doc": "plasticity-and-development", "evidence": ["one eye of a kitten"], "kind": "paraphrase"}
+{"id": "a34", "question": "Do adults grow new brain cells?", "answerable": true, "doc": "plasticity-and-development", "evidence": ["genuinely debated"], "kind": "paraphrase"}
+{"id": "a35", "question": "How can stroke patients regain use of a weak arm?", "answerable": true, "doc": "plasticity-and-development", "evidence": ["constraint-induced movement therapy"], "kind": "paraphrase"}
+{"id": "a36", "question": "Why does a child's brain remove connections as it grows?", "answerable": true, "doc": "plasticity-and-development", "evidence": ["synaptic pruning"], "kind": "paraphrase"}
+{"id": "a37", "question": "Why can't I tickle myself?", "answerable": true, "doc": "predictive-brain", "evidence": ["self-produced touch feels less intense"], "kind": "paraphrase"}
+{"id": "a38", "question": "What is predictive coding?", "answerable": true, "doc": "predictive-brain", "evidence": ["prediction error"], "kind": "paraphrase"}
+{"id": "a39", "question": "Why does the inside of a mask look like a normal face?", "answerable": true, "doc": "predictive-brain", "evidence": ["hollow mask illusion"], "kind": "paraphrase"}
+{"id": "a40", "question": "How can a sugar pill reduce pain?", "answerable": true, "doc": "predictive-brain", "evidence": ["Placebo effects"], "kind": "paraphrase"}
+{"id": "k01", "question": "Bliss Lømo 1973", "answerable": true, "kind": "keyword", "doc": "learning-and-memory", "evidence": ["Bliss and Terje Lømo"]}
+{"id": "k02", "question": "Schultz monkeys juice", "answerable": true, "kind": "keyword", "doc": "dopamine-and-reward", "evidence": ["Wolfram Schultz"]}
+{"id": "k03", "question": "Cowan 2001", "answerable": true, "kind": "keyword", "doc": "attention-and-working-memory", "evidence": ["Nelson Cowan in 2001"]}
+{"id": "k04", "question": "Maguire taxi Knowledge", "answerable": true, "kind": "keyword", "doc": "plasticity-and-development", "evidence": ["Eleanor Maguire"]}
+{"id": "k05", "question": "Raichle 2001", "answerable": true, "kind": "keyword", "doc": "attention-and-working-memory", "evidence": ["Marcus Raichle"]}
+{"id": "k06", "question": "Rao Ballard 1999", "answerable": true, "kind": "keyword", "doc": "predictive-brain", "evidence": ["Rajesh Rao and Dana Ballard"]}
+{"id": "k07", "question": "McGaugh noradrenaline", "answerable": true, "kind": "keyword", "doc": "emotion-and-decisions", "evidence": ["James McGaugh"]}
+{"id": "k08", "question": "Berridge rats sugar", "answerable": true, "kind": "keyword", "doc": "dopamine-and-reward", "evidence": ["Kent Berridge"]}
+{"id": "k09", "question": "Hubel Wiesel Nobel 1981", "answerable": true, "kind": "keyword", "doc": "plasticity-and-development", "evidence": ["1981 Nobel Prize"]}
+{"id": "k10", "question": "nodes of Ranvier", "answerable": true, "kind": "keyword", "doc": "neurons", "evidence": ["nodes of Ranvier"]}
+{"id": "k11", "question": "Iowa gambling task", "answerable": true, "kind": "keyword", "doc": "emotion-and-decisions", "evidence": ["Iowa gambling task"]}
+{"id": "k12", "question": "sharp-wave ripples", "answerable": true, "kind": "keyword", "doc": "sleep", "evidence": ["sharp-wave ripples"]}
+{"id": "u01", "question": "How do I renew my passport?", "answerable": false, "kind": "off_topic"}
+{"id": "u02", "question": "What is a good recipe for chocolate cake?", "answerable": false, "kind": "off_topic"}
+{"id": "u03", "question": "Who won the football World Cup in 2022?", "answerable": false, "kind": "off_topic"}
+{"id": "u04", "question": "How do I fix a leaking kitchen tap?", "answerable": false, "kind": "off_topic"}
+{"id": "u05", "question": "How many neurons does an octopus have?", "answerable": false, "kind": "in_domain"}
+{"id": "u06", "question": "What does serotonin do in depression?", "answerable": false, "kind": "in_domain"}
+{"id": "u07", "question": "How do migraines start in the brain?", "answerable": false, "kind": "in_domain"}
+{"id": "u08", "question": "What is the job of the thalamus?", "answerable": false, "kind": "in_domain"}

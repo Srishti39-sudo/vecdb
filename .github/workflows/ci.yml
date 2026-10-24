@@ -1,0 +1,33 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest tests -q        # offline: fake embedder + fake chat, no API key
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t vecdb-rag .
+      - name: smoke test the image
+        run: |
+          docker run -d --name rag -p 8000:8000 -e GEMINI_API_KEY=unused vecdb-rag
+          for i in $(seq 1 30); do curl -sf localhost:8000/healthz && break; sleep 1; done
+          curl -sf localhost:8000/readyz
+          docker logs rag

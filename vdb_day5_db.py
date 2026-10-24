@@ -104,25 +104,43 @@ class VectorDB:
             self._next_id = max(self._next_id, int(ids.max()) + 1) if n else self._next_id
         return ids
 
+    def remove(self, ids):
+        """Delete vectors and their metadata by id. Returns how many vectors were removed.
+        Works for Flat and IVF indexes; HNSW graphs cannot drop nodes (FAISS raises)."""
+        ids = np.ascontiguousarray(ids, dtype=np.int64)
+        if not len(ids):
+            return 0
+        with self._write_lock:
+            n = self.index.remove_ids(faiss.IDSelectorBatch(ids))
+            if self.raw is not None:
+                self.raw.remove_ids(faiss.IDSelectorBatch(ids))
+            with self._sql_lock:
+                self._db.executemany("DELETE FROM meta WHERE id = ?", [(int(i),) for i in ids])
+                self._db.commit()
+        return int(n)
+
     # ------------------------------------------------------------------ reads
-    def search_ids(self, Q, k=10, nprobe=None, efSearch=None, rerank=None):
+    def search_ids(self, Q, k=10, nprobe=None, efSearch=None, rerank=None, allowed_ids=None):
         """Fast path, numpy in -> numpy out: (scores (nq, k), ids (nq, k)). -1 = no result.
 
         rerank=N > k: ask the ANN index for N candidates, then rescore them with the exact
-        stored vectors and keep the best k. Needs keep_raw=True."""
+        stored vectors and keep the best k. Needs keep_raw=True.
+        allowed_ids: only these ids may come back (metadata filtering inside the search,
+        not after it, so a filter never leaves you with fewer than k results)."""
         Q = self._as_matrix(Q)
         d = self.search_defaults
         nprobe = d["nprobe"] if nprobe is None else nprobe
         efSearch = d["efSearch"] if efSearch is None else efSearch
         rerank = d["rerank"] if rerank is None else rerank
         self._set_params(nprobe, efSearch)
+        params = None if allowed_ids is None else self._filter_params(allowed_ids, nprobe, efSearch)
 
         if not rerank or rerank <= k:
-            return self.index.search(Q, k)
+            return self.index.search(Q, k, params=params)
         if self.raw is None:
             raise ValueError("rerank needs keep_raw=True")
 
-        _, cand = self.index.search(Q, rerank)
+        _, cand = self.index.search(Q, rerank, params=params)
         return self._rerank(Q, cand, k)
 
     def search(self, Q, k=10, **params):
@@ -221,6 +239,18 @@ class VectorDB:
             ivf.nprobe = nprobe
         if hasattr(inner, "hnsw"):
             inner.hnsw.efSearch = efSearch
+
+    def _filter_params(self, allowed_ids, nprobe, efSearch):
+        # search-time params replace the index's own settings, so nprobe / efSearch go in too
+        sel = faiss.IDSelectorBatch(np.ascontiguousarray(allowed_ids, dtype=np.int64))
+        if faiss.try_extract_index_ivf(self.inner) is not None:
+            params = faiss.SearchParametersIVF(sel=sel, nprobe=nprobe)
+        elif hasattr(self.inner, "hnsw"):
+            params = faiss.SearchParametersHNSW(sel=sel, efSearch=efSearch)
+        else:
+            params = faiss.SearchParameters(sel=sel)
+        params._sel = sel                                  # keep the selector alive during search
+        return params
 
     def _rerank(self, Q, cand, k):
         nq, n = cand.shape

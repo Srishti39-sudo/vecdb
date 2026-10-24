@@ -1,0 +1,12 @@
+.env
+.venv
+indexes
+er_challenge
+vecdb
+docs
+tests
+__pycache__
+*.log
+*.png
+results_*.json
+.git

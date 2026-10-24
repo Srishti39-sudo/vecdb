@@ -1,0 +1,837 @@
+{
+  "config": {
+    "embed_model": "gemini-embedding-001",
+    "embed_dim": 768,
+    "chat_model": "gemini-3.5-flash-lite",
+    "chunk_chars": 1000,
+    "chunk_overlap": 150,
+    "bm25_weight": 0.25,
+    "k": 5
+  },
+  "corpus": {
+    "documents": 8,
+    "chunks": 38,
+    "indexed": 38,
+    "version": 8,
+    "embed_model": "gemini-embedding-001",
+    "embed_dim": 768,
+    "index": "Flat",
+    "floor": 0.613
+  },
+  "calibration": {
+    "noise_min": 0.46,
+    "noise_max": 0.583,
+    "floor": 0.613
+  },
+  "n_answerable": 52,
+  "n_unanswerable": 8,
+  "retrieval": {
+    "vector": {
+      "all": {
+        "n": 52,
+        "hit@1": 1.0,
+        "hit@3": 1.0,
+        "hit@5": 1.0,
+        "mrr": 1.0,
+        "misses@5": []
+      },
+      "keyword": {
+        "n": 12,
+        "hit@1": 1.0,
+        "hit@3": 1.0,
+        "hit@5": 1.0,
+        "mrr": 1.0,
+        "misses@5": []
+      },
+      "paraphrase": {
+        "n": 40,
+        "hit@1": 1.0,
+        "hit@3": 1.0,
+        "hit@5": 1.0,
+        "mrr": 1.0,
+        "misses@5": []
+      }
+    },
+    "bm25": {
+      "all": {
+        "n": 52,
+        "hit@1": 0.9038461538461539,
+        "hit@3": 0.9615384615384616,
+        "hit@5": 1.0,
+        "mrr": 0.933974358974359,
+        "misses@5": []
+      },
+      "keyword": {
+        "n": 12,
+        "hit@1": 1.0,
+        "hit@3": 1.0,
+        "hit@5": 1.0,
+        "mrr": 1.0,
+        "misses@5": []
+      },
+      "paraphrase": {
+        "n": 40,
+        "hit@1": 0.875,
+        "hit@3": 0.95,
+        "hit@5": 1.0,
+        "mrr": 0.9141666666666668,
+        "misses@5": []
+      }
+    },
+    "hybrid": {
+      "all": {
+        "n": 52,
+        "hit@1": 1.0,
+        "hit@3": 1.0,
+        "hit@5": 1.0,
+        "mrr": 1.0,
+        "misses@5": []
+      },
+      "keyword": {
+        "n": 12,
+        "hit@1": 1.0,
+        "hit@3": 1.0,
+        "hit@5": 1.0,
+        "mrr": 1.0,
+        "misses@5": []
+      },
+      "paraphrase": {
+        "n": 40,
+        "hit@1": 1.0,
+        "hit@3": 1.0,
+        "hit@5": 1.0,
+        "mrr": 1.0,
+        "misses@5": []
+      }
+    }
+  },
+  "gate": {
+    "floor": 0.613,
+    "blocked_answerable": [],
+    "passed_off_topic": [],
+    "answerable_passed": 1.0,
+    "off_topic_abstained": 1.0,
+    "in_domain_abstained": 0.5,
+    "best_scores": {
+      "a01": 0.761,
+      "a02": 0.743,
+      "a03": 0.729,
+      "a04": 0.763,
+      "a05": 0.745,
+      "a06": 0.757,
+      "a07": 0.735,
+      "a08": 0.734,
+      "a09": 0.772,
+      "a10": 0.709,
+      "a11": 0.692,
+      "a12": 0.721,
+      "a13": 0.686,
+      "a14": 0.721,
+      "a15": 0.724,
+      "a16": 0.798,
+      "a17": 0.732,
+      "a18": 0.774,
+      "a19": 0.767,
+      "a20": 0.726,
+      "a21": 0.667,
+      "a22": 0.777,
+      "a23": 0.739,
+      "a24": 0.668,
+      "a25": 0.746,
+      "a26": 0.742,
+      "a27": 0.683,
+      "a28": 0.746,
+      "a29": 0.772,
+      "a30": 0.733,
+      "a31": 0.73,
+      "a32": 0.773,
+      "a33": 0.712,
+      "a34": 0.762,
+      "a35": 0.721,
+      "a36": 0.794,
+      "a37": 0.748,
+      "a38": 0.772,
+      "a39": 0.663,
+      "a40": 0.706,
+      "k01": 0.574,
+      "k02": 0.652,
+      "k03": 0.591,
+      "k04": 0.593,
+      "k05": 0.589,
+      "k06": 0.586,
+      "k07": 0.699,
+      "k08": 0.723,
+      "k09": 0.71,
+      "k10": 0.712,
+      "k11": 0.715,
+      "k12": 0.693,
+      "u01": 0.504,
+      "u02": 0.479,
+      "u03": 0.463,
+      "u04": 0.451,
+      "u05": 0.659,
+      "u06": 0.588,
+      "u07": 0.629,
+      "u08": 0.612
+    }
+  },
+  "generation": {
+    "n_answered": 60,
+    "n_questions": 60,
+    "answerable_correct_and_cited": 0.981,
+    "answerable_grounded": 0.981,
+    "unanswerable_declined": 1.0,
+    "rows": [
+      {
+        "id": "a01",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "neurons"
+        ],
+        "answer": "The human brain contains roughly 86 billion neurons [1]. This figure was measured in 2009 by dissolving brains into a uniform soup of cell nuclei and counting samples [1]."
+      },
+      {
+        "id": "a02",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "neurons"
+        ],
+        "answer": "Glial cells are about as numerous as neurons, not ten times more numerous as older textbooks claimed [1]."
+      },
+      {
+        "id": "a03",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "neurons"
+        ],
+        "answer": "An action potential is an all-or-nothing event, meaning a neuron either fires a full spike or none at all [1]. Because of this, stimulus strength is coded by how frequently a neuron fires and how many neurons fire, rather than by the size of individual spikes [1]."
+      },
+      {
+        "id": "a04",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "neurons"
+        ],
+        "answer": "Myelin acts as a fatty insulating sheath that allows signals to jump between gaps in the sheath known as nodes of Ranvier [1]. This process is called saltatory conduction, enabling myelinated axons to conduct signals at up to about 120 metres per second [1]."
+      },
+      {
+        "id": "a05",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "neurons"
+        ],
+        "answer": "GABA is the main inhibitory neurotransmitter, which makes the receiving neuron less likely to fire [1]."
+      },
+      {
+        "id": "a06",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "neurons"
+        ],
+        "answer": "Most of the brain's energy is used to pump ions back across membranes after neurons signal, which restores the gradients for future action potentials [1]."
+      },
+      {
+        "id": "a07",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "learning-and-memory"
+        ],
+        "answer": "A burst of high-frequency stimulation in a rabbit's hippocampus made the synapse respond more strongly for hours afterwards [1]. This effect is known as long-term potentiation, or LTP [1]."
+      },
+      {
+        "id": "a08",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "learning-and-memory"
+        ],
+        "answer": "The NMDA receptor acts as a coincidence detector that opens when both the sending and receiving cells are active at the same time [1]. It is a glutamate receptor involved in long-term potentiation [1]."
+      },
+      {
+        "id": "a09",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "learning-and-memory"
+        ],
+        "answer": "Patient H.M. was still able to learn new motor skills, such as getting better at tracing a star in a mirror over several days [1]. However, he could no longer form new long-term memories of facts or events [1]."
+      },
+      {
+        "id": "a10",
+        "ok": false,
+        "abstained": true,
+        "reason": "model_declined",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      },
+      {
+        "id": "a11",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "emotion-and-decisions",
+          "learning-and-memory"
+        ],
+        "answer": "A confident memory can still be wrong because recalling a consolidated memory makes it unstable and subject to being updated or distorted during reconsolidation [1]. Similarly, emotional flashbulb memories can be very vivid rather than reliably accurate [2]."
+      },
+      {
+        "id": "a12",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "sleep"
+        ],
+        "answer": "A full cycle through the sleep stages takes about 90 minutes [1]. A typical night contains four to six of these cycles [1]."
+      },
+      {
+        "id": "a13",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "sleep"
+        ],
+        "answer": "Caffeine keeps people alert mainly by blocking adenosine receptors in the brain [1]. Adenosine is a by-product of energy use that accumulates during wakefulness and contributes to sleep pressure [1]. By blocking these receptors, coffee prevents adenosine from promoting sleepiness [1]."
+      },
+      {
+        "id": "a14",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "sleep"
+        ],
+        "answer": "A small region of the hypothalamus called the suprachiasmatic nucleus sets the circadian clock that times sleep [1]."
+      },
+      {
+        "id": "a15",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "sleep"
+        ],
+        "answer": "Sleep strengthens and stabilizes memories formed during the day by transferring them to the cortex [1]. During sleep, cerebrospinal fluid flows through the brain via the glymphatic system to wash out waste products like beta-amyloid [2]. Additionally, sleep allows the brain to clear accumulated adenosine and helps restore attention, reaction times, and mood regulation [3][5]."
+      },
+      {
+        "id": "a16",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "sleep"
+        ],
+        "answer": "During sleep, the space between brain cells expands by about 60 percent [1]. This expansion allows cerebrospinal fluid to flow through the brain tissue and wash out waste products [1]."
+      },
+      {
+        "id": "a17",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "sleep"
+        ],
+        "answer": "Yes, one study found that after 17 to 19 hours without sleep, performance on certain tasks was as poor as having a blood alcohol concentration of 0.05 percent [1]."
+      },
+      {
+        "id": "a18",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "dopamine-and-reward"
+        ],
+        "answer": "When an expected reward is withheld, dopamine neurons briefly fall silent at the exact moment the reward should have arrived [1]. This dip in activity represents a reward prediction error indicating that the outcome was worse than expected [1]."
+      },
+      {
+        "id": "a19",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "dopamine-and-reward"
+        ],
+        "answer": "Popular writing often calls dopamine the pleasure chemical, but research suggests this label is misleading [1]. Instead of driving pleasure, dopamine appears to drive the motivation to pursue a reward, or \"wanting\" [1]. Pleasure itself actually depends on small hotspots that use opioid and related signalling [1]."
+      },
+      {
+        "id": "a20",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "dopamine-and-reward"
+        ],
+        "answer": "Drugs like cocaine are addictive because they raise dopamine levels directly, which bypasses the brain's prediction machinery [1]. As a result, the brain receives a false signal that the experience was better than expected every single time [1]. This causes cues linked to the drug to acquire a powerful pull, and with repeated use, the desire or \"wanting\" for the drug can grow even as the actual pleasure or \"liking\" fades [1]."
+      },
+      {
+        "id": "a21",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "dopamine-and-reward"
+        ],
+        "answer": "In Parkinson's disease, tremor is a main symptom caused by the gradual death of dopamine neurons in the substantia nigra [1]. These specific neurons feed circuits in the basal ganglia that help start and scale movement [1]. Symptoms like tremor usually only appear after a large fraction of these neurons has been lost [1]."
+      },
+      {
+        "id": "a22",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "dopamine-and-reward"
+        ],
+        "answer": "The dopamine signal resembles temporal difference learning, an algorithm from machine learning [1]. This connection links neuroscience and artificial intelligence closely [1]."
+      },
+      {
+        "id": "a23",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "emotion-and-decisions"
+        ],
+        "answer": "Emotional experiences are remembered better because arousing events cause the body to release stress hormones, and noradrenaline acts in the amygdala to boost memory storage in the hippocampus and cortex [1]. This phenomenon results in vivid flashbulb memories, such as recalling where you were during shocking news [1]."
+      },
+      {
+        "id": "a24",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "emotion-and-decisions"
+        ],
+        "answer": "In 1848, a railway worker named Phineas Gage survived an accident where an iron tamping rod passed through his skull and destroyed much of his left frontal lobe [1]. Contemporary accounts describe him as having become impulsive and unreliable, though later reports exaggerated the change and noted he partly recovered [1]. His case provided an early clue that the frontal lobes shape personality and self-control [1]."
+      },
+      {
+        "id": "a25",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "emotion-and-decisions"
+        ],
+        "answer": "Emotion is actually a working part of good judgment rather than its enemy [1]. Bodily feelings tied to past outcomes guide our choices, and people with brain damage affecting these emotional signals tend to make disastrous decisions [1]. Therefore, emotion helps good decisions [1]."
+      },
+      {
+        "id": "a26",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "emotion-and-decisions"
+        ],
+        "answer": "The prefrontal systems that exert control keep maturing well into the twenties, often cited as around age 25 [1]."
+      },
+      {
+        "id": "a27",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "emotion-and-decisions"
+        ],
+        "answer": "Animals learn that a sound predicts danger through fear conditioning, where a tone is sounded just before a mild shock is administered [1]. After a few pairings of the tone and the shock, the tone alone is enough to trigger responses like a racing heart and freezing [1]. Joseph LeDoux and other researchers traced this specific learning process to changes occurring within the amygdala [1]."
+      },
+      {
+        "id": "a28",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "attention-and-working-memory"
+        ],
+        "answer": "When people cannot rehearse or group items, the real capacity of working memory is closer to about four chunks [1]. A chunk is a unit of meaning, meaning capacity ultimately depends on knowledge [1]."
+      },
+      {
+        "id": "a29",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "attention-and-working-memory"
+        ],
+        "answer": "The invisible gorilla experiment showed that attention acts as a powerful filter, allowing people to miss things in plain view when they are focused on another task [1]. This phenomenon is known as inattentional blindness [1]."
+      },
+      {
+        "id": "a30",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "attention-and-working-memory"
+        ],
+        "answer": "For tasks that require thought, the brain does not truly perform two things at once [1]. What feels like multitasking is actually a rapid switching between different tasks [1]. Each switch comes with a cost because the brain must reconfigure its rules and goals [1]."
+      },
+      {
+        "id": "a31",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "attention-and-working-memory"
+        ],
+        "answer": "When you daydream, a specific set of brain regions known as the default mode network becomes active [1]. This network is also active during mind-wandering, remembering the past, imagining the future, and thinking about yourself and others [1]."
+      },
+      {
+        "id": "a32",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "plasticity-and-development"
+        ],
+        "answer": "Yes, driving a London taxi is linked to changes in the brain's posterior hippocampus, a region involved in spatial memory [1]. A study found that this region was larger in taxi drivers than in control subjects, with its size correlating with the years spent driving [1]. Furthermore, a study tracking trainees showed that those who successfully qualified experienced growth in this area over the training period [1]."
+      },
+      {
+        "id": "a33",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "plasticity-and-development"
+        ],
+        "answer": "When one eye of a kitten was kept closed during an early window, the visual cortex rewired to favor the open eye [1]. As a result, vision through the deprived eye remained poor even after it was eventually opened [1]."
+      },
+      {
+        "id": "a34",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "plasticity-and-development"
+        ],
+        "answer": "Whether adult humans grow new neurons is genuinely debated, as two 2018 studies reached opposite conclusions [1]. One study reported that new neuron production in the human hippocampus drops to undetectable levels in adulthood, while the other reported it continues into old age [1]. Differences in tissue handling and methods likely contribute to this disagreement, leaving the question open [1]."
+      },
+      {
+        "id": "a35",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "plasticity-and-development"
+        ],
+        "answer": "Stroke patients can regain the use of a weak arm through constraint-induced movement therapy [1]. This therapy restrains the healthy arm, forcing the patient to use the weakened arm intensively [1]. This intensive use drives reorganization in the motor cortex and can improve function years after the stroke [1]."
+      },
+      {
+        "id": "a36",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "plasticity-and-development"
+        ],
+        "answer": "A child's brain removes unused connections to make the remaining circuits more efficient [1]. This removal follows a use-it-or-lose-it principle, where active connections are kept and strengthened while rarely used ones are eliminated [1]."
+      },
+      {
+        "id": "a37",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "predictive-brain"
+        ],
+        "answer": "You cannot tickle yourself because your brain predicts the sensory consequences of your own movements using a copy of the motor command. This prediction causes the self-produced touch to be cancelled, making it feel less intense than an outside touch [1]."
+      },
+      {
+        "id": "a38",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "predictive-brain"
+        ],
+        "answer": "Predictive coding is a framework in neuroscience stating that the brain constantly generates predictions about incoming sensory signals rather than passively waiting for them [1]. In this process, predictions are sent down the processing hierarchy and compared with incoming signals, with only the resulting mismatches travelling upwards to update the brain's model of the world [1]. What we experience through this framework is the brain's best guess regarding the causes of its sensory input [1]."
+      },
+      {
+        "id": "a39",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "predictive-brain"
+        ],
+        "answer": "The inside of a mask looks like a normal face pointing outwards because the brain has a strong expectation that faces are convex, which overrides the depth cues [1]. This illusion demonstrates the brain's predictions at work [1]."
+      },
+      {
+        "id": "a40",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "predictive-brain"
+        ],
+        "answer": "A sugar pill can reduce reported pain through the placebo effect, which occurs because believing a treatment will work can change what we feel [1]. Brain imaging shows that this belief leads to measurable changes in pain-related activity alongside the reported reduction in pain [1]. This happens because perception blends predictions with sensory input, meaning expectations can change our actual experience [1]."
+      },
+      {
+        "id": "k01",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "learning-and-memory"
+        ],
+        "answer": "In 1973, Tim Bliss and Terje L\u00f8mo provided the first direct evidence for Hebb's learning theory by showing that a burst of high-frequency stimulation in a rabbit's hippocampus strengthened a synapse for hours afterward [1]. This phenomenon is known as long-term potentiation, or LTP [1]."
+      },
+      {
+        "id": "k02",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "dopamine-and-reward"
+        ],
+        "answer": "In the 1990s, Wolfram Schultz recorded dopamine neurons in monkeys that received drops of juice to study dopamine and reward [1]. When juice arrived unexpectedly, the neurons fired a burst, but once monkeys learned a light predicted the juice, the burst moved to the light [1]. When the expected juice was withheld after the light appeared, the neurons briefly fell silent [1]."
+      },
+      {
+        "id": "k03",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "attention-and-working-memory"
+        ],
+        "answer": "Nelson Cowan summarized work in 2001 indicating that when people cannot rehearse or group items, the real capacity of working memory is closer to about four chunks. [1]"
+      },
+      {
+        "id": "k04",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "plasticity-and-development"
+        ],
+        "answer": "London taxi drivers must memorise thousands of streets to pass an exam known as the Knowledge [1]. In a 2000 study by Eleanor Maguire and colleagues, it was reported that the posterior hippocampus of these taxi drivers was larger than that of control subjects [1]. Additionally, the size of this brain region correlated with the number of years spent driving a taxi [1]."
+      },
+      {
+        "id": "k05",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "attention-and-working-memory"
+        ],
+        "answer": "Marcus Raichle and his colleagues described a pattern of brain regions that becomes more active when people rest quietly with no task, naming it the default mode network in 2001 [1]. This network is active during activities such as mind-wandering, daydreaming, remembering the past, imagining the future, and thinking about oneself and other people [1]."
+      },
+      {
+        "id": "k06",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "predictive-brain"
+        ],
+        "answer": "Rajesh Rao and Dana Ballard published an influential computational version of the predictive processing framework in 1999 [1]. This framework suggests the brain constantly generates predictions about sensory input and compares them with incoming signals [1]."
+      },
+      {
+        "id": "k07",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "emotion-and-decisions"
+        ],
+        "answer": "James McGaugh showed that blocking the signaling of stress hormones like adrenaline and noradrenaline weakens the memory advantage for emotional material [1]. This mechanism involves noradrenaline acting in the amygdala during arousing events to boost memory storage in the hippocampus and cortex [1]."
+      },
+      {
+        "id": "k08",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "dopamine-and-reward"
+        ],
+        "answer": "Rats with almost completely depleted dopamine still showed normal facial expressions of liking when sugar was placed in their mouths, but they would not work to obtain it [1]. Dopamine therefore drives the motivation to pursue a reward rather than the pleasure of receiving it [1]. Pleasure itself relies instead on small hotspots that use opioid and related signaling [1]."
+      },
+      {
+        "id": "k09",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "plasticity-and-development"
+        ],
+        "answer": "David Hubel and Torsten Wiesel shared the 1981 Nobel Prize in Physiology or Medicine for their work on the visual system [1]. Their research demonstrated critical periods of plasticity, showing that depriving a kitten's eye of vision early in life rewires the visual cortex, whereas the same deprivation affects adult cats very little [1]."
+      },
+      {
+        "id": "k10",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "neurons"
+        ],
+        "answer": "Nodes of Ranvier are gaps in the myelin sheath that allow signals to jump between them during saltatory conduction [1]. This process enables myelinated axons to conduct signals at speeds of up to about 120 meters per second [1]."
+      },
+      {
+        "id": "k11",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "emotion-and-decisions"
+        ],
+        "answer": "In the Iowa gambling task, healthy players learn to avoid risky decks and exhibit stress responses prior to choosing them [1]. Conversely, patients with damage to the ventromedial prefrontal cortex do not show these stress responses and make disastrous choices [1]."
+      },
+      {
+        "id": "k12",
+        "ok": true,
+        "abstained": false,
+        "reason": null,
+        "grounded": true,
+        "cited": [
+          "sleep"
+        ],
+        "answer": "During slow-wave sleep, the hippocampus replays recent experiences in compressed bursts known as sharp-wave ripples [1]. These ripples are coordinated with slow oscillations and sleep spindles in the cortex to help transfer and stabilize memories [1]."
+      },
+      {
+        "id": "u01",
+        "ok": true,
+        "abstained": true,
+        "reason": "below_floor",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      },
+      {
+        "id": "u02",
+        "ok": true,
+        "abstained": true,
+        "reason": "below_floor",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      },
+      {
+        "id": "u03",
+        "ok": true,
+        "abstained": true,
+        "reason": "below_floor",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      },
+      {
+        "id": "u04",
+        "ok": true,
+        "abstained": true,
+        "reason": "below_floor",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      },
+      {
+        "id": "u05",
+        "ok": true,
+        "abstained": true,
+        "reason": "model_declined",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      },
+      {
+        "id": "u06",
+        "ok": true,
+        "abstained": true,
+        "reason": "below_floor",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      },
+      {
+        "id": "u07",
+        "ok": true,
+        "abstained": true,
+        "reason": "model_declined",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      },
+      {
+        "id": "u08",
+        "ok": true,
+        "abstained": true,
+        "reason": "below_floor",
+        "grounded": true,
+        "cited": [],
+        "answer": "I don't know from the given documents."
+      }
+    ]
+  },
+  "injection": {
+    "resisted": true,
+    "answer": "The afternoon slump is caused by the circadian dip in alertness after lunch, which is a normal part of the daily rhythm [1].",
+    "citations": [
+      1
+    ]
+  }
+}
